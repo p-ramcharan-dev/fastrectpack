@@ -4,7 +4,7 @@
 [![ci](https://github.com/p-ramcharan-dev/fastrectpack/actions/workflows/ci.yml/badge.svg)](https://github.com/p-ramcharan-dev/fastrectpack/actions/workflows/ci.yml)
 [![wheels](https://github.com/p-ramcharan-dev/fastrectpack/actions/workflows/wheels.yml/badge.svg)](https://github.com/p-ramcharan-dev/fastrectpack/actions/workflows/wheels.yml)
 ![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue)
-![Python 3.9 to 3.13](https://img.shields.io/badge/python-3.9%20to%203.13-blue)
+![Python 3.9 to 3.15](https://img.shields.io/badge/python-3.9%20to%203.15-blue)
 
 A drop-in accelerator for [rectpack](https://github.com/secnot/rectpack), the pure-Python 2D rectangle packing library. The MaxRects packing algorithms are re-implemented in C++17 and produce **exactly the same packings** as the original, 5x to 246x faster on the 14 integer benchmark workloads and more on large single-bin jobs. Sizes can be Python ints, floats, `numpy.float64` or `numpy.int64`.
 
@@ -60,7 +60,7 @@ The benchmark machine is a laptop that drops into slow phases (probably thermal 
 pip install fastrectpack
 ```
 
-Prebuilt wheels cover CPython 3.9 to 3.13 on Linux x86_64 (manylinux), Windows x86_64 and macOS arm64 (Apple silicon). Other platforms (Linux ARM, Intel Macs, Alpine/musl) and Python 3.14 are untested and build from the source distribution, which needs CMake 3.15+ and a C++17 compiler (MSVC 2019+, GCC 9+ or Clang 10+). From a checkout: `pip install .`. `rectpack==0.2.2` is installed as a dependency.
+Prebuilt wheels cover CPython 3.9 to 3.15 on Linux (x86_64 and ARM64, both glibc and Alpine/musl), Windows x86_64 and macOS (Apple silicon and Intel). Anything else (Windows on ARM, 32-bit systems, free-threaded Python builds) is untested and builds from the source distribution, which needs CMake 3.15+ and a C++17 compiler (MSVC 2019+, GCC 9+ or Clang 10+). From a checkout: `pip install .`. `rectpack==0.2.2` is installed as a dependency.
 
 ## Usage
 
@@ -80,6 +80,23 @@ for bin_index, x, y, w, h, rid in packer.rect_list():
 ```
 
 `fastrectpack` re-exports everything rectpack exports. `MaxRectsBl`, `MaxRectsBssf`, `MaxRectsBaf` and `MaxRectsBlsf` are replaced by accelerated subclasses of the originals; everything else is the original object.
+
+## Speeding up a library you cannot edit
+
+Some packages call rectpack internally, so you cannot change their import. Call `install()` once and `rectpack` itself hands out the accelerated classes for the rest of the process:
+
+```python
+import fastrectpack
+fastrectpack.install()
+
+import gdsfactory as gf   # or any other package that uses rectpack
+```
+
+`rectpack.newPacker()` and the four `rectpack.MaxRects*` names then give the fastrectpack classes. Packings are identical. With `install()` active, gdsfactory's own `_pack_single_bin` function (copied from its source, not edited) packed 400 rectangles in 0.012 s instead of 3.06 s, with the same result; that is one timing on one laptop, and gdsfactory itself was not installed.
+
+- Call it before the code you want to speed up runs.
+- A class that a module already imported by name (`from rectpack import MaxRectsBssf`, before the call) keeps pointing at the original. `newPacker` is updated either way.
+- It changes `rectpack` for everything in the process. `fastrectpack.uninstall()` reverses it.
 
 ## How it works
 
@@ -108,13 +125,13 @@ When an accelerated object meets an input outside the fast path, it hands its st
 
 ## How correctness was checked
 
-- **Exact parity.** After every single placement, the tests compare the fitness value, the placement and the complete list of free rectangles (including its order) against the original. 1,038 tests, including three Hypothesis property tests (300, 150 and 400 generated cases) and all 200 packer configurations that use a MaxRects algorithm, run once with integer sizes and once with mixed types.
+- **Exact parity.** After every single placement, the tests compare the fitness value, the placement and the complete list of free rectangles (including its order) against the original. 1,045 tests, including three Hypothesis property tests (300, 150 and 400 generated cases) and all 200 packer configurations that use a MaxRects algorithm, run once with integer sizes and once with mixed types.
 - **Types as well as values.** Every comparison records the type of each number, so `5`, `5.0` and `numpy.float64(5.0)` count as different results. On the float path the tests also check that the work stayed in C++.
 - **Edge cases.** Decimals, NaN, infinity, zero and negative sizes, booleans, strings, `None`, unsupported numpy types, sizes beyond the native range, exact fits, pieces larger than the bin, floats that do not round cleanly. Results and exceptions match the original.
 - **Benchmark outputs.** Every benchmark run hashes the full result of all three variants; all 14 cases are identical.
 - **Sanitizers.** The suite passes under AddressSanitizer and UndefinedBehaviorSanitizer, both locally (GCC 15.2 in WSL) and on a GitHub Actions Ubuntu runner.
 - **Mutation check.** Eleven deliberate bugs were injected into the C++, five of them in the float and numpy handling. The tests caught all eleven.
-- **Platforms and Python versions.** In GitHub Actions the full suite, including the float and numpy tests, passes on Python 3.9, 3.10 and 3.13 on Linux x86_64, and on 3.10 and 3.13 on Windows x86_64 and macOS arm64. The wheels for Python 3.9 to 3.13 on those three systems are each built and tested too, but without numpy installed, so the numpy tests are skipped there. Locally the suite also passes on Windows with numpy 1.26, 2.4 and 2.5.
+- **Platforms and Python versions.** In GitHub Actions the full suite of 1,045 tests, with numpy installed, ran inside each of the 49 wheels: Python 3.9 to 3.15 on Linux x86_64 and ARM64 (glibc and musl), Windows x86_64, and macOS arm64 and x86_64 (the Intel wheels were tested under Rosetta on an Apple silicon runner, not on Intel hardware). Locally it also passes on Windows with numpy 1.26, 2.4 and 2.5.
 
 Run them yourself:
 
@@ -136,7 +153,7 @@ These were found while porting. They are reproduced on purpose, not fixed, so th
 
 ## Limitations
 
-- Speed was measured on one Windows laptop only. Correctness is checked in CI on Linux, Windows and macOS (arm64), but speed on those systems has not been measured.
+- Speed was measured on one Windows laptop only. Correctness is checked in CI on Linux, Windows and macOS, but speed on those systems has not been measured.
 - The package subclasses rectpack internals and pins `rectpack==0.2.2`. A new rectpack release would need re-checking.
 - An unpickled or deep-copied packer continues on the original Python code path: correct, but not accelerated.
 
