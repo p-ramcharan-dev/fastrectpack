@@ -114,7 +114,7 @@ When an accelerated object meets an input outside the fast path, it hands its st
 - **Benchmark outputs.** Every benchmark run hashes the full result of all three variants; all 14 cases are identical.
 - **Sanitizers.** The suite passes under AddressSanitizer and UndefinedBehaviorSanitizer, both locally (GCC 15.2 in WSL) and on a GitHub Actions Ubuntu runner.
 - **Mutation check.** Eleven deliberate bugs were injected into the C++, five of them in the float and numpy handling. The tests caught all eleven.
-- **Platforms and Python versions.** For 0.1.0, the test suite ran in GitHub Actions inside every built wheel: Python 3.9, 3.10, 3.11, 3.12 and 3.13 on Linux x86_64, Windows x86_64 and macOS arm64. 0.2.0 has so far been tested on Windows only: Python 3.13 with numpy 2.5, and Python 3.11 with numpy 1.26 and 2.4. Its float path has not yet run on Linux or macOS.
+- **Platforms and Python versions.** In GitHub Actions the full suite, including the float and numpy tests, passes on Python 3.9, 3.10 and 3.13 on Linux x86_64, and on 3.10 and 3.13 on Windows x86_64 and macOS arm64. The wheels for Python 3.9 to 3.13 on those three systems are each built and tested too, but without numpy installed, so the numpy tests are skipped there. Locally the suite also passes on Windows with numpy 1.26, 2.4 and 2.5.
 
 Run them yourself:
 
