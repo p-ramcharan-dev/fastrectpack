@@ -1,5 +1,6 @@
 # fastrectpack
 
+[![PyPI](https://img.shields.io/pypi/v/fastrectpack)](https://pypi.org/project/fastrectpack/)
 [![ci](https://github.com/p-ramcharan-dev/fastrectpack/actions/workflows/ci.yml/badge.svg)](https://github.com/p-ramcharan-dev/fastrectpack/actions/workflows/ci.yml)
 [![wheels](https://github.com/p-ramcharan-dev/fastrectpack/actions/workflows/wheels.yml/badge.svg)](https://github.com/p-ramcharan-dev/fastrectpack/actions/workflows/wheels.yml)
 ![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue)

@@ -39,6 +39,7 @@ test = ["pytest", "hypothesis"]
 
 [tool.scikit-build]
 wheel.packages = ["src/fastrectpack"]
+wheel.exclude = ["**/*.cpp"]  # the C++ source stays in the sdist; the wheel only needs the compiled module
 cmake.build-type = "Release"
 cmake.version = ">=3.15"
 # Keep the source distribution to what a user needs to build and test the package.

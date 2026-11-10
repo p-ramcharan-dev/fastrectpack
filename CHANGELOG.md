@@ -2,9 +2,14 @@
 
 All notable changes to this project are listed here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project uses [Semantic Versioning](https://semver.org/).
 
-## [0.1.0] - not yet released
+## [Unreleased]
 
-First version.
+### Changed
+- Wheels no longer include `_native.cpp`. The C++ source stays in the source distribution.
+
+## [0.1.0] - 2026-11-10
+
+First release, on PyPI: https://pypi.org/project/fastrectpack/0.1.0/
 
 ### Added
 - C++17 (pybind11) implementations of `MaxRectsBl`, `MaxRectsBssf`, `MaxRectsBaf` and `MaxRectsBlsf`, exposed as subclasses of the originals. Output is identical to `rectpack` 0.2.2.
