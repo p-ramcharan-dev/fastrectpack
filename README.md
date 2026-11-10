@@ -81,7 +81,7 @@ Profiling the original showed about 90% of its time in one step that compares ev
 | MaxRects algorithms (Bl, Bssf, Baf, Blsf), with or without rotation | Yes |
 | All bin heuristics (BNF, BFF, BBF, Global), online and offline modes, all sort orders | Yes, when used with a MaxRects algorithm |
 | Sizes given as plain Python `int`, up to 2^30 | Yes |
-| Sizes given as `float`, `Decimal`, numpy integers or `bool` | No: handled by the original code, same result, original speed |
+| Sizes given as `float`, `Decimal`, numpy values or `bool` | No: handled by the original code with the same result, but **not faster, and slower in at least one measured case** (see "What is not faster") |
 | Skyline and Guillotine algorithms | No: unchanged original code |
 
 When an accelerated object meets an input outside the fast path, it hands its state to the original Python implementation and continues there, so results and error messages stay the same.
@@ -89,7 +89,7 @@ When an accelerated object meets an input outside the fast path, it hands its st
 ## What is not faster
 
 - **Many-bin workloads.** With 100 open bins, most of the time goes to the Python loop that asks every bin how well a rectangle fits. That loop was left in Python, so the gain there is about 5x.
-- **Non-integer sizes.** Floats and Decimals run at the original speed.
+- **Non-integer sizes and numpy values.** Floats, Decimals and numpy scalars fall back to the original code, so there is no speedup. I originally described this as "original speed", but one measurement contradicts that: packing 300 and 1,000 rectangles with `numpy.float64` bin sizes (the way the gdsfactory package calls rectpack) took about 2x as long as plain rectpack (3.99 s against 1.85 s, and 106.8 s against 59.8 s). The output was identical. Until this is fixed, do not use fastrectpack where bin or rectangle sizes are not plain Python ints. I have not yet found the cause of the extra time.
 - **Skyline and Guillotine.** Not ported.
 
 ## How correctness was checked

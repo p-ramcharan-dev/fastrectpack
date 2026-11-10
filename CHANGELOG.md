@@ -4,6 +4,9 @@ All notable changes to this project are listed here. The format follows [Keep a 
 
 ## [Unreleased]
 
+### Known issues
+- In 0.1.0, inputs outside the integer fast path (floats, `Decimal`, numpy scalars) fall back to the original code but run about 2x slower than plain `rectpack` in at least one measured workload (gdsfactory-style packing with `numpy.float64` bin sizes). Output is identical. The cause has not been diagnosed. Planned: find the overhead, and add float and numpy support to the fast path.
+
 ### Changed
 - Wheels no longer include `_native.cpp`. The C++ source stays in the source distribution.
 
