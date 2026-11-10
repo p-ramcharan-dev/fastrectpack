@@ -1,0 +1,70 @@
+[build-system]
+requires = ["scikit-build-core>=0.11", "pybind11>=2.13"]
+build-backend = "scikit_build_core.build"
+
+[project]
+name = "fastrectpack"
+version = "0.1.0"
+description = "Drop-in C++ accelerator for rectpack's MaxRects 2D packing algorithms, with identical output"
+readme = "README.md"
+requires-python = ">=3.9"
+license = "Apache-2.0"
+license-files = ["LICENSE", "NOTICE"]
+authors = [{ name = "Ramcharan" }]
+keywords = ["rectpack", "bin packing", "rectangle packing", "2d packing", "nesting", "pybind11", "performance"]
+dependencies = ["rectpack==0.2.2"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "Programming Language :: C++",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+]
+
+[project.urls]
+Homepage = "https://github.com/p-ramcharan-dev/fastrectpack"
+Source = "https://github.com/p-ramcharan-dev/fastrectpack"
+Issues = "https://github.com/p-ramcharan-dev/fastrectpack/issues"
+Benchmarks = "https://github.com/p-ramcharan-dev/fastrectpack/blob/main/BENCHMARKS.md"
+"Original library" = "https://github.com/secnot/rectpack"
+
+[project.optional-dependencies]
+test = ["pytest", "hypothesis"]
+
+[tool.scikit-build]
+wheel.packages = ["src/fastrectpack"]
+cmake.build-type = "Release"
+cmake.version = ">=3.15"
+# Keep the source distribution to what a user needs to build and test the package.
+sdist.exclude = [".github", "results", "research", "tools", "CASE_STUDY.md", "docs/benchmarks-light.png", "docs/benchmarks-dark.png"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py39"
+extend-exclude = ["results", "docs"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I"]
+
+[tool.ruff.lint.per-file-ignores]
+# Scripts put their own folder on sys.path before importing local modules (E402) and build wide table
+# strings (E501). The line-length limit is enforced for the package itself.
+"bench/*.py" = ["E402", "E501"]
+"research/*.py" = ["E402", "E501"]
+"tools/*.py" = ["E402", "E501"]
+"tests/*.py" = ["E402", "E501"]
+
+[tool.cibuildwheel]
+build = "cp39-* cp310-* cp311-* cp312-* cp313-*"
+skip = "*-musllinux_* *-win32 *-manylinux_i686"
+test-extras = ["test"]
+test-command = "pytest {project}/tests -q"

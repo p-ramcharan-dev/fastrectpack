@@ -1,0 +1,2 @@
+# Pinned versions for reproducing the baseline (the ORIGINAL library under test)
+rectpack==0.2.2

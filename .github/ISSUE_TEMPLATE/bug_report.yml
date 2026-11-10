@@ -1,0 +1,30 @@
+name: Bug report
+description: fastrectpack gives a different result from rectpack, crashes, or fails to install
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        The most useful report is a difference in output between `rectpack` and `fastrectpack` for the same input.
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened, and what did you expect?
+    validations:
+      required: true
+  - type: textarea
+    id: reproducer
+    attributes:
+      label: Smallest script that shows it
+      description: Ideally one that runs the same input through `rectpack` and `fastrectpack` and prints both results.
+      render: python
+    validations:
+      required: true
+  - type: textarea
+    id: versions
+    attributes:
+      label: Environment
+      description: Output of `python -c "import sys, platform, rectpack, fastrectpack; print(sys.version); print(platform.platform()); print(fastrectpack.__version__, fastrectpack.NATIVE_AVAILABLE)"`
+      render: text
+    validations:
+      required: true

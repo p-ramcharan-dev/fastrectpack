@@ -1,0 +1,13 @@
+fastrectpack
+Copyright 2026 Ramcharan
+
+This product is a derivative work of rectpack (https://github.com/secnot/rectpack),
+licensed under the Apache License, Version 2.0, by its author SecNot.
+
+Changes made: the MaxRects packing algorithms (MaxRectsBl, MaxRectsBssf, MaxRectsBaf,
+MaxRectsBlsf) were re-implemented in C++17 for plain Python int sizes and are exposed
+through classes that subclass the originals. All other behaviour and all other algorithms
+are the unmodified rectpack code, which is installed as a dependency and re-exported.
+
+The MaxRects family itself is described in: Jukka Jylanki, "A Thousand Ways to Pack the
+Bin - A Practical Approach to Two-Dimensional Rectangle Bin Packing" (2010).

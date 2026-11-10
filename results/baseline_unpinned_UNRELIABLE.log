@@ -1,0 +1,15 @@
+random   n=  200  median    0.354s  min    0.353  max    0.361  placed=200 bins=1 digest=5af02711f0c3d6fd
+random   n=  500  median    0.968s  min    0.963  max    0.980  placed=500 bins=2 digest=109f450574085caf
+random   n= 1000  median    3.550s  min    3.528  max    3.571  placed=1000 bins=4 digest=c17c427d28d315b1
+random   n= 2000  median   12.036s  min    7.734  max   17.007  placed=2000 bins=7 digest=8a097df5d6f9d93e
+random   n= 5000  median   21.494s  min   21.260  max   56.738  placed=5000 bins=16 digest=654e1107bf9c2e0c
+cutting  n=  500  median    0.037s  min    0.037  max    0.038  placed=500 bins=27 digest=e8b6c7e5d6198e7e
+cutting  n= 1000  median    0.122s  min    0.121  max    0.126  placed=1000 bins=50 digest=8efabe86919b7e81
+cutting  n= 2000  median    0.437s  min    0.434  max    0.450  placed=2000 bins=100 digest=43ce5cc68bdea4e5
+sprites  n=  500  median    0.071s  min    0.070  max    0.073  placed=500 bins=2 digest=6167d5c147ef8a4b
+sprites  n= 1000  median    0.512s  min    0.510  max    0.515  placed=1000 bins=3 digest=082fe62163954a8b
+sprites  n= 2000  median    1.524s  min    1.504  max    1.528  placed=2000 bins=5 digest=fb4a5f0b8fe48e23
+skewed   n=  500  median    0.702s  min    0.686  max    0.707  placed=500 bins=3 digest=75615c6f82c2ac51
+skewed   n= 1000  median    5.372s  min    1.409  max    5.472  placed=1000 bins=4 digest=34d77ab420785e0b
+skewed   n= 2000  median    7.624s  min    2.259  max    8.346  placed=2000 bins=11 digest=129b78bd5c8fcbd3
+saved results/baseline.json

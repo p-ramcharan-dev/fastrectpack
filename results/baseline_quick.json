@@ -1,0 +1,77 @@
+{
+ "started": "2026-11-10 05:01:31",
+ "env": {
+  "python": "3.13.5 | packaged by Anaconda, Inc. | (main, Jun 12 2025, 16:37:03) [MSC v.1929 64 bit (AMD64)]",
+  "implementation": "CPython",
+  "platform": "Windows-11-10.0.26100-SP0",
+  "machine": "AMD64",
+  "processor": "Intel64 Family 6 Model 183 Stepping 1, GenuineIntel",
+  "cpu": "Intel(R) Core(TM) i7-14700HX",
+  "power_plan": "Power Scheme GUID: 381b4222-f694-41f0-9685-ff5bb260df2e  (Balanced)",
+  "ram_gb": "31.7",
+  "rectpack_version": "0.2.2"
+ },
+ "config": "newPacker() defaults: Offline, BBF, MaxRectsBssf, SORT_AREA, rotation=True",
+ "cases": [
+  {
+   "kind": "random",
+   "n": 200,
+   "placed": 200,
+   "bins_used": 1,
+   "digest": "5af02711f0c3d6fd",
+   "reps": 3,
+   "warmup": 1,
+   "median_s": 0.34964450000006764,
+   "min_s": 0.34837989999959973,
+   "max_s": 0.35032719999981055,
+   "mean_s": 0.3494505333331593,
+   "stdev_s": 0.000988034221881463,
+   "iqr_s": null,
+   "all_s": [
+    0.34964450000006764,
+    0.34837989999959973,
+    0.35032719999981055
+   ]
+  },
+  {
+   "kind": "random",
+   "n": 500,
+   "placed": 500,
+   "bins_used": 2,
+   "digest": "109f450574085caf",
+   "reps": 3,
+   "warmup": 1,
+   "median_s": 0.9487429999999222,
+   "min_s": 0.9453692999995837,
+   "max_s": 0.958220400000755,
+   "mean_s": 0.9507775666667536,
+   "stdev_s": 0.006662753856429223,
+   "iqr_s": null,
+   "all_s": [
+    0.958220400000755,
+    0.9487429999999222,
+    0.9453692999995837
+   ]
+  },
+  {
+   "kind": "cutting",
+   "n": 500,
+   "placed": 500,
+   "bins_used": 27,
+   "digest": "e8b6c7e5d6198e7e",
+   "reps": 3,
+   "warmup": 1,
+   "median_s": 0.03802150000046822,
+   "min_s": 0.037352999999711756,
+   "max_s": 0.038125899999613466,
+   "mean_s": 0.037833466666597815,
+   "stdev_s": 0.0004193578465306583,
+   "iqr_s": null,
+   "all_s": [
+    0.038125899999613466,
+    0.03802150000046822,
+    0.037352999999711756
+   ]
+  }
+ ]
+}

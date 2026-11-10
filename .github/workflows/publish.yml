@@ -1,0 +1,61 @@
+# Publishes fastrectpack to PyPI using Trusted Publishing (no API token is stored anywhere).
+#
+# Safety: this only runs when started by hand (workflow_dispatch), and the final job uses the `pypi`
+# environment, which requires a named reviewer to approve before anything is uploaded.
+#
+# One-time setup on pypi.org (the project does not exist yet, so use a "pending publisher"):
+#   Account settings > Publishing > Add a new pending publisher
+#     PyPI project name: fastrectpack | Owner: p-ramcharan-dev | Repository: fastrectpack
+#     Workflow name: publish.yml     | Environment name: pypi
+name: publish
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build_sdist:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install build twine
+      - run: python -m build --sdist
+      - run: python -m twine check dist/*
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist-sdist
+          path: dist/*.tar.gz
+
+  build_wheels:
+    name: Wheels on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: true
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pypa/cibuildwheel@v2.21
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist-wheels-${{ matrix.os }}
+          path: wheelhouse/*.whl
+
+  publish:
+    needs: [build_sdist, build_wheels]
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/project/fastrectpack/
+    permissions:
+      id-token: write   # required for Trusted Publishing
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: dist-*
+          path: dist
+          merge-multiple: true
+      - run: ls -l dist
+      - uses: pypa/gh-action-pypi-publish@release/v1

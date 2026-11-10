@@ -1,0 +1,42 @@
+# Builds and tests wheels on Linux, macOS and Windows. It does NOT publish anything:
+# wheels are only attached to the workflow run as artifacts.
+name: wheels
+
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  build_wheels:
+    name: Wheels on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pypa/cibuildwheel@v2.21
+      - uses: actions/upload-artifact@v4
+        with:
+          name: wheels-${{ matrix.os }}
+          path: wheelhouse/*.whl
+
+  sanitizers:
+    name: ASan + UBSan (Linux)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install pytest hypothesis
+      - run: python -m pip install . -C cmake.define.FASTRECTPACK_SANITIZE=address,undefined
+      - name: Run tests under sanitizers
+        run: |
+          export LD_PRELOAD="$(gcc -print-file-name=libasan.so) $(gcc -print-file-name=libubsan.so)"
+          export ASAN_OPTIONS=detect_leaks=0
+          export UBSAN_OPTIONS=halt_on_error=1:print_stacktrace=1
+          python -m pytest tests -q -p no:cacheprovider

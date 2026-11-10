@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Problem with the original rectpack behaviour
+    url: https://github.com/secnot/rectpack/issues
+    about: If rectpack itself behaves oddly (packing quality, validate_packing, return types), it belongs in the original project. fastrectpack reproduces that behaviour on purpose.
+  - name: Security problem
+    url: https://github.com/p-ramcharan-dev/fastrectpack/security/policy
+    about: Please report vulnerabilities privately, not in a public issue.

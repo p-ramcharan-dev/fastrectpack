@@ -1,0 +1,30 @@
+name: Performance report
+description: A workload where fastrectpack is still slow, or slower than expected
+labels: [performance]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Real workloads are the most valuable input this project can get. Known slow spots: jobs spread over many bins (about 5x) and non-integer sizes (original speed).
+  - type: textarea
+    id: workload
+    attributes:
+      label: Workload
+      description: Number of rectangles, size range, bin size and count, whether sizes are ints.
+    validations:
+      required: true
+  - type: textarea
+    id: settings
+    attributes:
+      label: Packer settings
+      description: The `newPacker(...)` call, or the algorithm classes you use.
+      render: python
+    validations:
+      required: true
+  - type: textarea
+    id: timings
+    attributes:
+      label: Timings
+      description: Time with `rectpack` and with `fastrectpack`, how many runs, and the hardware.
+    validations:
+      required: true
