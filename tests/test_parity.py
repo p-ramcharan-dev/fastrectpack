@@ -4,7 +4,7 @@ import random
 
 import pytest
 import rectpack
-from helpers import ALGOS, all_packer_configs, packer_kwargs, random_ops, run_algo, run_packer
+from helpers import ALGOS, all_packer_configs, packer_kwargs, random_ops, run_algo, run_packer, snap
 from hypothesis import HealthCheck, given, settings
 from hypothesis import strategies as st
 
@@ -58,7 +58,7 @@ def test_every_packer_configuration_matches():
                 mismatches.append(cfg)
             # a configuration that only ever errors would compare equal without testing anything
             assert a[0] != "error", (cfg, a)
-            placed_anything = placed_anything or a[0] != "[]"
+            placed_anything = placed_anything or a[0] != snap([])
         assert placed_anything, cfg
     assert not mismatches
 

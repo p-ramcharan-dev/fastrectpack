@@ -1,0 +1,11 @@
+gdsfactory n=  100 identical=True  original    0.031s  native  0.0006s (x    55)
+float      n=  100 identical=True  original    0.027s  native  0.0006s (x    46)
+numpy_int  n=  100 identical=True  original    0.039s  native  0.0007s (x    56)
+gdsfactory n=  300 identical=True  original    0.633s  native  0.0022s (x   284)
+float      n=  300 identical=True  original    0.592s  native  0.0023s (x   257)
+numpy_int  n=  300 identical=True  original    0.840s  native  0.0027s (x   314)
+gdsfactory n= 1000 identical=True  original   20.612s  native  0.0173s (x  1193)
+float      n= 1000 identical=True  original   20.272s  native  0.0148s (x  1374)
+numpy_int  n= 1000 identical=True  original   27.063s  native  0.0156s (x  1734)
+saved results/mixed.json results/mixed.md
+done

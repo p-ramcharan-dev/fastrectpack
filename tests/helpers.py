@@ -6,8 +6,13 @@ ALGOS = ("MaxRectsBl", "MaxRectsBssf", "MaxRectsBaf", "MaxRectsBlsf")
 
 
 def snap(value):
-    """repr-based snapshot: also distinguishes int / float / bool / Decimal types."""
-    return repr(value)
+    """Snapshot of a result that records the exact type of every number as well as its value.
+
+    repr alone is not enough: under numpy 1.x, repr(numpy.float64(1.5)) is '1.5', the same as a plain float.
+    """
+    if isinstance(value, (list, tuple)):
+        return type(value).__name__ + "(" + ", ".join(snap(v) for v in value) + ")"
+    return f"{type(value).__module__}.{type(value).__qualname__}:{value!r}"
 
 
 def run_algo(mod, name, width, height, rot, ops):

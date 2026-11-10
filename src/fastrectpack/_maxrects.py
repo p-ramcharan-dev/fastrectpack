@@ -1,9 +1,11 @@
 """Native-backed drop-in replacements for rectpack's MaxRects* classes.
 
-Each class subclasses the original (so isinstance checks and every method we do not override still work),
-runs the algorithm in C++ while all dimensions are plain Python ints, and falls back to the original Python
-code, permanently for that object, the first time it sees anything else (floats, Decimals, numpy ints, bools,
-zero or negative sizes, huge ints). The fallback is the original code, so results and errors are the same.
+Each class subclasses the original (so isinstance checks and every method we do not override still work) and
+runs the algorithm in C++ while every size is a Python int, a Python float, a numpy.float64 or a numpy.int64.
+Results have the same values and the same types as the original's. It falls back to the original Python code,
+permanently for that object, the first time it sees anything else (Decimals, bools, other numpy types, NaN,
+infinity, zero or negative sizes, sizes above 2^30). The fallback is the original code, so results and errors
+are the same.
 """
 from rectpack import maxrects as _orig
 from rectpack.geometry import Rectangle

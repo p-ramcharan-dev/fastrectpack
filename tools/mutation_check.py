@@ -14,11 +14,22 @@ original = open(SRC, encoding="utf-8").read()
 MUTATIONS = [
     ("tie-break picks LAST minimal candidate (<= instead of <)", lambda s: s.replace("key < best_key", "key <= best_key")),
     ("MaxRectsBl rotated key uses height instead of width", lambda s: s.replace("m.y + w : rect_fitness(m, h, w)", "m.y + h : rect_fitness(m, h, w)")),
-    ("skip 'contained by another' direction in duplicate removal", lambda s: s.replace("                if (contains(next[j], next[i])) flagged.push_back(next[i]);\n", "")),
+    ("skip 'contained by another' direction in duplicate removal", lambda s: s.replace(
+        "                } else if (contains(next[b], next[a])) {\n                    flagged.push_back(next[a]);\n                }\n", "                }\n")),
     ("touching rectangles counted as intersecting", lambda s: s.replace("m.y >= r.top() || m.top() <= r.y", "m.y > r.top() || m.top() <= r.y")),
     ("Baf fitness ignores the placed rectangle's area", lambda s: s.replace("m.w * m.h - cw * ch", "m.w * m.h")),
     ("split pieces emitted in a different order (top before right)", lambda s: re.sub(
-        r"(            if \(r\.right\(\) < m\.right\(\)\) \{[^\n]*\n)(            if \(r\.top\(\) < m\.top\(\)\) \{[^\n]*\n)", r"\2\1", s)),
+        r"(            if \(r\.right\(\) < m\.right\(\)\) \{\n.*\n.*\n            \}\n)(            if \(r\.top\(\) < m\.top\(\)\) \{\n.*\n.*\n            \}\n)",
+        r"\2\1", s)),
+    # mixed path (floats and numpy scalars)
+    ("mixed path: result type of + - * is the narrower type instead of the wider one", lambda s: s.replace("a.tag | b.tag", "a.tag & b.tag")),
+    ("mixed path: Blsf returns the second of two equal leftovers (wrong type on a tie)", lambda s: s.replace(
+        "std::max(m.w - cw, m.h - ch)", "std::max(m.h - ch, m.w - cw)")),
+    ("mixed path: Baf accepts sizes whose products are not exact in a double", lambda s: s.replace(
+        "kMixedBafLimit = i64(1) << 26", "kMixedBafLimit = i64(1) << 30")),
+    ("mixed path: zero, negative and NaN sizes are accepted", lambda s: s.replace("a.n.v > 0.0 && ", "")),
+    ("mixed path: numpy.float64 results come back as plain floats", lambda s: s.replace(
+        'PyObject_CallFunction(reinterpret_cast<PyObject*>(g_np_float64), "d", n.v)', "PyFloat_FromDouble(n.v)")),
 ]
 
 env = dict(os.environ)
