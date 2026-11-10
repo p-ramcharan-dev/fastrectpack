@@ -32,7 +32,7 @@ jobs:
       - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
-      - run: python -m pip install pytest hypothesis
+      - run: python -m pip install pytest hypothesis numpy
       - run: python -m pip install . -C cmake.define.FASTRECTPACK_SANITIZE=address,undefined
       - name: Run tests under sanitizers
         run: |

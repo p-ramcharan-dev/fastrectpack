@@ -4,6 +4,16 @@ All notable changes to this project are listed here. The format follows [Keep a 
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-11-10
+
+### Added
+- `fastrectpack.install()`: makes `rectpack` itself hand out the accelerated classes, so a library that uses rectpack internally gets faster without being edited. `uninstall()` reverses it and `is_installed()` reports the state. `rectpack.newPacker`, the four `rectpack.MaxRects*` names (also in `rectpack.maxrects`) and the default algorithm of every packer class are covered.
+- Prebuilt wheels for Python 3.14 and 3.15, Linux ARM64, Alpine Linux (musl, x86_64 and ARM64) and Intel Macs. 49 wheels in total, up from 15. Previously these all had to compile the C++ at install time.
+- `tests/test_install.py`, including all 200 packer configurations run through the patched `rectpack` and a fresh-interpreter test. The suite has 1,045 tests.
+
+### Changed
+- Wheel tests now install numpy where a prebuilt numpy wheel exists, so the numpy tests run inside the wheels instead of being skipped.
+
 ## [0.2.0] - 2026-11-10
 
 ### Added

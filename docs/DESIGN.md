@@ -29,6 +29,12 @@ Each accelerated class (`MaxRectsBssf` and friends) subclasses the original, so 
 - Code that peeks at `_max_rects` still works: it is built on demand from the C++ state until the object falls back.
 - Pickling and `copy.deepcopy` work: the state is serialised as plain Python, and the restored object continues on the original code path (correct, not accelerated).
 
+## `install()`: patching rectpack in place
+
+For code that cannot be edited to import fastrectpack. `src/fastrectpack/_install.py` swaps the four MaxRects classes in three places: the `rectpack` package, `rectpack.maxrects`, and `rectpack.packer`'s own copy of `MaxRectsBssf`. It also rewrites default arguments. `newPacker(pack_algo=MaxRectsBssf)` and the `__init__` of each packer class captured the original class when rectpack was imported, so the function objects' `__defaults__` are replaced; that also reaches code that did `from rectpack import newPacker` earlier. A class imported by name before the call cannot be reached and stays the original.
+
+The accelerated classes subclass originals that were captured at import, so the swap cannot make them inherit from themselves. `uninstall()` runs the same swap in reverse.
+
 ## The mixed path: floats and numpy scalars
 
 Added in 0.2.0. The algorithm is one C++ template, instantiated for 64-bit integers (the int path) and for a small `Num` struct (the mixed path), so both paths run the same code.
