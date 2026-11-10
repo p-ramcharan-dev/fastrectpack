@@ -55,15 +55,6 @@ def test_decimal_workload_via_float2dec(name):
     assert run_algo(fastrectpack, name, W, H, True, ops) == run_algo(rectpack, name, W, H, True, ops)
 
 
-def test_numpy_ints_match_and_use_the_fallback():
-    np = pytest.importorskip("numpy")
-    ops = [(np.int64(10), np.int64(12), 0), (np.int64(30), np.int64(5), 1), (np.int64(7), np.int64(7), 2)]
-    assert run_algo(fastrectpack, "MaxRectsBssf", 100, 100, True, ops) == run_algo(rectpack, "MaxRectsBssf", 100, 100, True, ops)
-    a = fastrectpack.MaxRectsBssf(100, 100)
-    a.add_rect(np.int64(10), np.int64(12), 0)
-    assert a._native is None  # documented: numpy ints are not on the fast path
-
-
 @pytest.mark.parametrize("name", ALGOS)
 def test_degenerate_shapes(name):
     cases = [

@@ -4,7 +4,7 @@ build-backend = "scikit_build_core.build"
 
 [project]
 name = "fastrectpack"
-version = "0.1.0"
+version = "0.2.0"
 description = "Drop-in C++ accelerator for rectpack's MaxRects 2D packing algorithms, with identical output"
 readme = "README.md"
 requires-python = ">=3.9"

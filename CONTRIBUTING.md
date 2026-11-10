@@ -30,7 +30,7 @@ If a substantial part of a change was written with an AI assistant, please say s
 ## Things worth knowing
 
 - Quirks inherited from rectpack are **reproduced on purpose** so that output matches (see "Behaviour inherited from rectpack" in the README). Please do not fix them here; they belong upstream.
-- The fast path only handles plain Python `int` sizes up to 2^30. Anything else falls back to the original code. Adding a float fast path is welcome, but must keep value types identical (`0` versus `0.0`), which is harder than it looks. See `docs/DESIGN.md`.
+- The fast path handles Python `int`, Python `float`, `numpy.float64` and `numpy.int64` sizes up to 2^30. Anything else falls back to the original code. Results must keep the original's value types (`0` versus `0.0` versus `numpy.float64(0.0)`); the tests compare types as well as values. See `docs/DESIGN.md`.
 - Moving the bin-selection loop (`PackerBBF` and friends) into C++ is the most valuable open improvement. It would lift workloads that spread rectangles over many bins above the current ~5x.
 
 ## Checks you can run
@@ -39,6 +39,7 @@ If a substantial part of a change was written with an AI assistant, please say s
 |---|---|
 | Tests | `pytest -q` |
 | Quick benchmark (about a minute) | `python bench/run_bench.py --quick` |
+| Float and numpy benchmark | `python bench/run_mixed.py --quick` |
 | Mutation check (breaks the C++ on purpose, expects the tests to notice) | `python tools/mutation_check.py` |
 | AddressSanitizer + UBSan (Linux) | `bash tools/sanitize_linux.sh` |
 

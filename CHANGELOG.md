@@ -4,11 +4,26 @@ All notable changes to this project are listed here. The format follows [Keep a 
 
 ## [Unreleased]
 
-### Known issues
-- In 0.1.0, inputs outside the integer fast path (floats, `Decimal`, numpy scalars) fall back to the original code but run about 2x slower than plain `rectpack` in at least one measured workload (gdsfactory-style packing with `numpy.float64` bin sizes). Output is identical. The cause has not been diagnosed. Planned: find the overhead, and add float and numpy support to the fast path.
+## [0.2.0] - 2026-11-10
+
+### Added
+- Sizes given as Python `float`, `numpy.float64` or `numpy.int64`, in any mix with plain `int`, now run in C++. Results have the same values and the same types as `rectpack` returns. This covers the way gdsfactory and phidl call rectpack (integer rectangle sizes in a `numpy.float64` bin), which 0.1.0 handed to the original Python code. Measured speedups are in `BENCHMARKS.md`.
+- An object that starts with `int` sizes and later receives a float or numpy size stays in C++ instead of falling back.
+- `tests/test_mixed_types.py`: step-by-step parity for every mix of the four types, all 200 packer configurations with mixed types, a gdsfactory-style test, size limits, and a Hypothesis property test. All test snapshots now record the type of every number. The suite has 1,038 tests.
+- `bench/run_mixed.py`, a benchmark for float and numpy input.
+- Five more mutations in `tools/mutation_check.py` for the new path. All eleven are caught.
+
+### Fixed
+- The "known issue" recorded after 0.1.0, that the fallback to the original code ran about 2x slower than plain `rectpack`, was a measurement artifact and not a defect. The fallback makes 0.007% more Python function calls than `rectpack` and takes the same time when the two are timed in alternation. The two original figures were taken one after the other on a laptop whose speed for identical work changes by 2x to 4x between minutes. Evidence: `research/fallback_slowdown.py` and `results/fallback_slowdown.txt`.
+- `tools/mutation_check.py`: the "split pieces in a different order" mutation no longer applied to the source and was reported as not applied. It applies again and is caught.
 
 ### Changed
 - Wheels no longer include `_native.cpp`. The C++ source stays in the source distribution.
+- The build passes `-ffp-contract=off` (GCC, Clang) and `/fp:precise` (MSVC), which the float path needs to match Python bit for bit.
+- On the float path, `MaxRectsBaf` accepts sizes up to 2^26; larger sizes fall back to the original code. Other algorithms accept up to 2^30, as before.
+
+### Still falling back to the original code
+- `Decimal`, `Fraction`, `bool`, `numpy.float32`, numpy integer types other than `numpy.int64`, NaN, infinity, zero or negative sizes, and sizes above 2^30. Output is identical; speed is that of `rectpack`.
 
 ## [0.1.0] - 2026-11-10
 
